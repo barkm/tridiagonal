@@ -3,7 +3,7 @@
 #include <vector>
 #include <eigen3/Eigen/Dense>
 
-#include <tridiagonal/off_tridiagonal.hpp>
+#include <tridiagonal/tridiagonal>
 
 using std::vector;
 
@@ -59,12 +59,12 @@ TEST_CASE("Off tridiagonal solver tests", "[offtridiagonal]") {
                 solve_off_tridiagonal(lower_diagonal, diagonal, upper_diagonal, rhs);
         REQUIRE(solution.size() == 2);
 
-        Vector2d bezier_solution;
-        bezier_solution << solution[0](0,0), solution[1](0,0);
+        Vector2d tridiagonal_solution;
+        tridiagonal_solution << solution[0](0,0), solution[1](0,0);
 
         Vector2d eigen_solution = M.fullPivHouseholderQr().solve(D);
 
-        REQUIRE(bezier_solution.isApprox(eigen_solution));
+        REQUIRE(tridiagonal_solution.isApprox(eigen_solution));
     }
 
     SECTION("2x2 block matrix (different sizes) system"){
@@ -99,13 +99,13 @@ TEST_CASE("Off tridiagonal solver tests", "[offtridiagonal]") {
                 solve_off_tridiagonal(lower_diagonal, diagonal, upper_diagonal, rhs);
         REQUIRE(solution.size() == 2);
 
-        Matrix<double, 5, 2> bezier_solution;
-        bezier_solution.block(0, 0, 2, 2) = solution[0];
-        bezier_solution.block(2, 0, 3, 2) = solution[1];
+        Matrix<double, 5, 2> tridiagonal_solution;
+        tridiagonal_solution.block(0, 0, 2, 2) = solution[0];
+        tridiagonal_solution.block(2, 0, 3, 2) = solution[1];
 
         Matrix<double, 5, 2> eigen_solution = M.fullPivHouseholderQr().solve(D);
 
-        REQUIRE(bezier_solution.isApprox(eigen_solution));
+        REQUIRE(tridiagonal_solution.isApprox(eigen_solution));
 
     }
 
@@ -145,26 +145,26 @@ TEST_CASE("Off tridiagonal solver tests", "[offtridiagonal]") {
         d1 = D.block(2, 0, 2, 1);
         d2 = D.block(4, 0, 2, 1);
 
-        vector<Matrix2d> diagonal_elements = {b0, b1, b2};
-        vector<Matrix2d> lower_diagonal_elements = {a0, a1, a2};
-        vector<Matrix2d> upper_diagonal_elements = {c0, c1, c2};
-        vector<Vector2d> right_hand_side = {d0, d1, d2};
+        vector<Matrix2d> diagonal = {b0, b1, b2};
+        vector<Matrix2d> lower_diagonal = {a0, a1, a2};
+        vector<Matrix2d> upper_diagonal = {c0, c1, c2};
+        vector<Vector2d> rhs = {d0, d1, d2};
 
         vector<Vector2d> solution =
-                solve_off_tridiagonal(lower_diagonal_elements,
-                                                   diagonal_elements,
-                                                   upper_diagonal_elements,
-                                                   right_hand_side);
+                solve_off_tridiagonal(lower_diagonal,
+                                      diagonal,
+                                      upper_diagonal,
+                                      rhs);
         REQUIRE(solution.size() == 3);
 
-        Matrix<double, 6, 1> bezier_solution;
-        bezier_solution.block(0, 0, 2, 1) = solution[0];
-        bezier_solution.block(2, 0, 2, 1) = solution[1];
-        bezier_solution.block(4, 0, 2, 1) = solution[2];
+        Matrix<double, 6, 1> tridiagonal_solution;
+        tridiagonal_solution.block(0, 0, 2, 1) = solution[0];
+        tridiagonal_solution.block(2, 0, 2, 1) = solution[1];
+        tridiagonal_solution.block(4, 0, 2, 1) = solution[2];
 
         Matrix<double, 6, 1> eigen_solution = M.fullPivHouseholderQr().solve(D);
 
-        REQUIRE(bezier_solution.isApprox(eigen_solution));
+        REQUIRE(tridiagonal_solution.isApprox(eigen_solution));
     }
 
     SECTION("4x4 matrix system") {
@@ -207,12 +207,12 @@ TEST_CASE("Off tridiagonal solver tests", "[offtridiagonal]") {
                 solve_off_tridiagonal(lower_diagonal, diagonal, upper_diagonal, rhs);
         REQUIRE(solution.size() == 4);
 
-        Matrix<double, 4, 1> bezier_solution;
-        bezier_solution << solution[0](0, 0), solution[1](0, 0), solution[2](0, 0), solution[3](0, 0);
+        Matrix<double, 4, 1> tridiagonal_solution;
+        tridiagonal_solution << solution[0](0, 0), solution[1](0, 0), solution[2](0, 0), solution[3](0, 0);
 
         Matrix<double, 4, 1> eigen_solution = M.fullPivHouseholderQr().solve(D);
 
-        REQUIRE(bezier_solution.isApprox(eigen_solution));
+        REQUIRE(tridiagonal_solution.isApprox(eigen_solution));
     }
 
 

@@ -3,7 +3,7 @@
 #include <vector>
 #include <eigen3/Eigen/Dense>
 
-#include <tridiagonal/tridiagonal.hpp>
+#include <tridiagonal/tridiagonal>
 
 using std::vector;
 
@@ -125,13 +125,13 @@ TEST_CASE("Tri-diagonal solver tests", "[tridiagonal]"){
                                                       rhs);
         REQUIRE(solution.size() == 2);
 
-        Matrix<double, 5, 2> bezier_solution;
-        bezier_solution.block(0, 0, 2, 2) = solution[0];
-        bezier_solution.block(2, 0, 3, 2) = solution[1];
+        Matrix<double, 5, 2> tridiagonal_solution;
+        tridiagonal_solution.block(0, 0, 2, 2) = solution[0];
+        tridiagonal_solution.block(2, 0, 3, 2) = solution[1];
 
         Matrix<double, 5, 2> eigen_solution = M.fullPivHouseholderQr().solve(D);
 
-        REQUIRE(bezier_solution.isApprox(eigen_solution));
+        REQUIRE(tridiagonal_solution.isApprox(eigen_solution));
     }
 
 
@@ -171,23 +171,23 @@ TEST_CASE("Tri-diagonal solver tests", "[tridiagonal]"){
         d1 = D.block(2, 0, 2, 1);
         d2 = D.block(4, 0, 2, 1);
 
-        vector<Matrix2d> diagonal_elements = {b0, b1, b2};
-        vector<Matrix2d> lower_diagonal_elements = {a1, a2};
-        vector<Matrix2d> upper_diagonal_elements = {c0, c1};
-        vector<Vector2d> right_hand_side = {d0, d1, d2};
+        vector<Matrix2d> diagonal = {b0, b1, b2};
+        vector<Matrix2d> lower_diagonal = {a1, a2};
+        vector<Matrix2d> upper_diagonal = {c0, c1};
+        vector<Vector2d> rhs = {d0, d1, d2};
 
-        vector<Vector2d> solution = solve_tridiagonal(lower_diagonal_elements,
-                                                      diagonal_elements,
-                                                      upper_diagonal_elements,
-                                                      right_hand_side);
+        vector<Vector2d> solution = solve_tridiagonal(lower_diagonal,
+                                                      diagonal,
+                                                      upper_diagonal,
+                                                      rhs);
         REQUIRE(solution.size() == 3);
 
-        Matrix<double, 6, 1> bezier_solution;
-        bezier_solution.block(0, 0, 2, 1) = solution[0];
-        bezier_solution.block(2, 0, 2, 1) = solution[1];
-        bezier_solution.block(4, 0, 2, 1) = solution[2];
+        Matrix<double, 6, 1> tridiagonal_solution;
+        tridiagonal_solution.block(0, 0, 2, 1) = solution[0];
+        tridiagonal_solution.block(2, 0, 2, 1) = solution[1];
+        tridiagonal_solution.block(4, 0, 2, 1) = solution[2];
         Matrix<double, 6, 1> eigen_solution = M.fullPivHouseholderQr().solve(D);
-        REQUIRE(bezier_solution.isApprox(eigen_solution));
+        REQUIRE(tridiagonal_solution.isApprox(eigen_solution));
     }
 
     SECTION("tests invalid arguments"){
