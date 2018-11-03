@@ -1,29 +1,9 @@
-# tridiagonal
+//
+//  | b0  c0  0  | |x1|   |d0|
+//  | a1  b1  c1 | |x2| = |d1|
+//  | 0   a2  b2 | |x3|   |d2|
+//
 
-`tridiagonal` is a C++ template library with solvers for tridiagonal block matrix systems.
-## Solvers 
-`tridiagonal::solve_tridiagonal` solves block matrix systems on the form
-
-<p align="center">
-<img src="resources/tridiagonal.png" width="500">
-</p>
-
-`tridiagonal::solve_off_tridiagonal` solves block matrix systems on the form
-
-<p align="center">
-<img src="resources/off_tridiagonal.png" width="500">
-</p>
-
-
-## Installation
-
-[Eigen](http://eigen.tuxfamily.org) is used for linear algebra structures and operations.
-
-To install the library clone the repository and copy the [tridiagonal](tridiagonal/) directory to the desired install location. 
-
-## Example
-
-```cpp
 #include <eigen3/Eigen/Dense>
 #include <tridiagonal/tridiagonal>
 
@@ -84,13 +64,3 @@ int main(){
 
     assert(tridiagonal_solution.isApprox(eigen_solution));
 }
-```
-
-## Tests
-
-The solvers are unit tested with [Catch2](https://github.com/catchorg/Catch2). To compile and run the unit tests make sure that [tridiagonal](tridiagonal/), Eigen and Catch2 is in the include path and run
-
-```bash
-$ gcc tests/*.cpp -o test.out -std=c++11
-$ ./test.out
-```
